@@ -97,7 +97,7 @@ body.home-mode #appHeader{display:none}
 body.home-mode main{max-width:none;margin:0;padding:0}
 .fretego-home{width:100%;margin:0;padding:0}
 .fretego-capa-wrap{position:relative;width:100%;max-width:1024px;margin:0 auto;line-height:0;overflow:hidden}
-.fretego-capa-img{display:block;width:100%;height:auto;margin:0;padding:0}
+.fretego-capa-img{display:block;width:100%;height:auto;margin:0;padding:0}.capa-fallback{padding:48px 20px;text-align:center;line-height:1.5;color:#334155;background:#eff6ff}.capa-fallback p{margin-top:8px}
 .capa-hotspot{position:absolute;display:block;margin:0;padding:0;border:0;background:transparent!important;box-shadow:none!important;border-radius:0;cursor:pointer;z-index:5;line-height:normal;transform:none!important}
 .capa-hotspot:focus{outline:3px solid rgba(255,255,255,.95);outline-offset:-4px}
 .capa-frete{left:5.15%;top:45.8%;width:28.8%;height:27.4%}
@@ -107,6 +107,46 @@ body.home-mode main{max-width:none;margin:0;padding:0}
 .capa-motorista{left:20%;top:3%;width:60%;height:13%;}
 @media(max-width:600px){.capa-hotspot:active{background:rgba(255,255,255,.06)!important}}
 @keyframes fgToastIn{from{transform:translateY(-8px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+
+/* Refinamento visual, acessibilidade e janelas responsivas */
+:root{--primary:#1746a2;--primary-hover:#123984;--accent-green:#0f9f6e;--bg-main:#f3f6fb;--border:#dce4ef;--shadow-card:0 8px 26px rgba(15,23,42,.07)}
+body{line-height:1.45;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit}
+button{min-height:46px;touch-action:manipulation}
+button:focus-visible,.service-card:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(37,99,235,.32);outline-offset:2px}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);outline:none;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+textarea{resize:vertical;min-height:100px}
+.card{box-shadow:var(--shadow-card)}
+section:not(.fretego-home){animation:fgSectionIn .18s ease-out}
+@keyframes fgSectionIn{from{opacity:.65;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+#avaliacaoModal{position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.62);backdrop-filter:blur(4px);overflow-y:auto}
+#avaliacaoModal.hidden{display:none!important}
+#avaliacaoModal .card{width:min(100%,520px);max-height:calc(100dvh - 36px);overflow-y:auto;margin:auto;padding:clamp(18px,4vw,28px);border:1px solid rgba(255,255,255,.6);box-shadow:0 24px 80px rgba(0,0,0,.28);border-radius:24px}
+#avaliacaoModal h2{font-size:clamp(20px,5vw,25px)}
+#avaliacaoModal .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+#avaliacaoModal .modal-actions button{margin:0}
+#avaliacaoMensagem:empty{display:none}
+body.modal-open{overflow:hidden}
+#clienteHistorico{scroll-margin-top:90px}
+.service-card{min-height:125px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.service-card:focus-visible{outline-offset:3px}
+.detail{overflow-wrap:anywhere}
+.admin-table{min-width:480px}
+@media(max-width:480px){
+  header{padding:16px 12px}
+  header h1{font-size:23px}
+  main{padding:0 10px;margin:10px auto}
+  .card{padding:16px;border-radius:17px}
+  .price{font-size:32px}
+  .conta-flutuante{right:10px;bottom:10px}
+  #avaliacaoModal{padding:10px}
+  #avaliacaoModal .card{max-height:calc(100dvh - 20px);border-radius:20px}
+  #avaliacaoModal .modal-actions{grid-template-columns:1fr}
+  .admin-tabs button{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
 </style>
 </head>
 <body class="home-mode">
@@ -123,7 +163,7 @@ body.home-mode main{max-width:none;margin:0;padding:0}
 
 <section id="home" class="fretego-home">
   <div class="fretego-capa-wrap">
-    <img class="fretego-capa-img" src="capa.webp" alt="FreteGo - Seu frete na palma da mão">
+    <img class="fretego-capa-img" src="capa.webp" alt="FreteGo - Seu frete na palma da mão" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><div class="capa-fallback" hidden><strong>🚚 FreteGo</strong><p>Arquivo da capa não encontrado. Envie <code>capa.webp</code> para a mesma pasta do <code>index.html</code>.</p></div>
     <!-- Áreas transparentes: a arte permanece exatamente igual; somente os cartões ficam clicáveis. -->
     <button class="capa-hotspot capa-frete" aria-label="Frete" onclick="abrirServicoCapa('carga')"></button>
     <button class="capa-hotspot capa-corrida" aria-label="Corrida" onclick="abrirServicoCapa('passageiro')"></button>
@@ -211,7 +251,7 @@ body.home-mode main{max-width:none;margin:0;padding:0}
       </div>
     </div>
 
-    <div id="clienteHistorico" class="card" style="margin:0 0 16px 0;box-shadow:none;border:1px solid #e5e7eb;">
+    <div id="clienteHistorico" class="card hidden" style="margin:0 0 16px 0;box-shadow:none;border:1px solid #e5e7eb;">
       <h3>📋 Meus Fretes</h3>
       <div id="listaHistoricoCliente">Carregando...</div>
       <button class="secondary" onclick="fecharHistoricoCliente()">Fechar histórico</button>
@@ -343,15 +383,15 @@ body.home-mode main{max-width:none;margin:0;padding:0}
 <button class="secondary" onclick="inicio()">← Voltar ao Início</button>
 </section>
 
-<section id="avaliacaoModal" class="hidden">
+<section id="avaliacaoModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="tituloAvaliacao">
 <div class="card" style="max-width:520px;margin:20px auto">
-  <h2>⭐ Avaliar motorista</h2>
+  <h2 id="tituloAvaliacao">⭐ Avaliar motorista</h2>
   <p style="color:var(--text-muted);font-size:14px">Sua avaliação ajuda a manter a reputação dos profissionais no FreteGo.</p>
   <label>Nota</label>
   <select id="avaliacaoNota"><option value="5">⭐⭐⭐⭐⭐ — Excelente</option><option value="4">⭐⭐⭐⭐ — Muito bom</option><option value="3">⭐⭐⭐ — Bom</option><option value="2">⭐⭐ — Regular</option><option value="1">⭐ — Ruim</option></select>
   <label>Comentário</label>
   <textarea id="avaliacaoComentario" rows="4" placeholder="Conte como foi sua experiência (opcional)"></textarea>
-  <div style="display:flex;gap:8px;margin-top:10px">
+  <div class="modal-actions">
     <button class="green" onclick="salvarAvaliacaoCliente()">⭐ Enviar avaliação</button>
     <button class="secondary" onclick="fecharAvaliacaoCliente()">Voltar</button>
   </div>
@@ -473,8 +513,8 @@ let listenerDriverActive = null;
 let listenerHistoricoMotorista = null;
 
 const $=id=>document.getElementById(id);
-function sections(){["home","acesso","cliente","orcamento","clienteViagem","motorista","admin"].forEach(id=>$(id).classList.add("hidden"));document.body.classList.remove("home-mode")}
-function inicio(){sections();$("home").classList.remove("hidden");document.body.classList.add("home-mode");window.scrollTo(0,0)}
+function sections(){["home","acesso","cliente","orcamento","clienteViagem","avaliacaoModal","motorista","admin"].forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});document.body.classList.remove("home-mode","modal-open")}
+function inicio(){sections();$("home").classList.remove("hidden");document.body.classList.add("home-mode");window.scrollTo({top:0,behavior:"smooth"})}
 function abrirServicoCapa(tipo){localStorage.setItem("fretego_servico_pendente",tipo);cliente()}
 
 function abrirAcesso(){
@@ -596,24 +636,36 @@ async function recuperarSenhaAcesso(){
 }
 
 function abrirAvaliacaoCliente(){
-  if(!clienteOrderId || !frete || !(frete.status==="entregue" || Number(frete.etapa||0)>=4)){ alert("A avaliação estará disponível após a conclusão do serviço."); return; }
+  if(!clienteOrderId || !frete || !(frete.status==="entregue" || Number(frete.etapa||0)>=4)){
+    alert("A avaliação estará disponível após a conclusão do serviço."); return;
+  }
   if(frete.avaliacaoCliente){ alert("Você já avaliou este serviço."); return; }
+  if(!frete.motorista && !frete.motoristaId){ alert("Este serviço não possui motorista vinculado para avaliação."); return; }
   sections();
-  $("avaliacaoModal").classList.remove("hidden");
+  const modal=$("avaliacaoModal");
+  modal.classList.remove("hidden");
+  document.body.classList.add("modal-open");
   $("avaliacaoNota").value="5";
   $("avaliacaoComentario").value="";
   $("avaliacaoMensagem").textContent="";
+  const btn=modal.querySelector('button[onclick="salvarAvaliacaoCliente()"]');
+  if(btn){btn.disabled=false;btn.textContent="⭐ Enviar avaliação";}
+  setTimeout(()=>$("avaliacaoNota").focus(),50);
 }
 function fecharAvaliacaoCliente(){
   sections();
   $("clienteViagem").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
   if(clienteOrderId) ouvirPedidoCliente(clienteOrderId);
 }
 async function salvarAvaliacaoCliente(){
   if(!clienteOrderId || !clienteUser) return;
   const nota=Number($("avaliacaoNota").value);
   const comentario=$("avaliacaoComentario").value.trim();
-  if(nota<1 || nota>5){ alert("Escolha uma nota de 1 a 5."); return; }
+  if(!Number.isInteger(nota) || nota<1 || nota>5){ $("avaliacaoMensagem").textContent="Escolha uma nota de 1 a 5."; return; }
+  const btn=$("avaliacaoModal").querySelector('button[onclick="salvarAvaliacaoCliente()"]');
+  if(btn){btn.disabled=true;btn.textContent="⏳ Enviando...";}
+  $("avaliacaoMensagem").textContent="Enviando sua avaliação...";
   try{
     const ref=db.collection("fretes").doc(clienteOrderId);
     const snap=await ref.get();
@@ -627,8 +679,12 @@ async function salvarAvaliacaoCliente(){
       notaMotorista:nota
     });
     $("avaliacaoMensagem").textContent="✅ Avaliação enviada com sucesso!";
-    setTimeout(()=>{ fecharAvaliacaoCliente(); },700);
-  }catch(e){ $("avaliacaoMensagem").textContent="❌ "+e.message; }
+    if(btn)btn.textContent="✅ Avaliação enviada";
+    setTimeout(()=>{ fecharAvaliacaoCliente(); },900);
+  }catch(e){
+    $("avaliacaoMensagem").textContent="❌ "+(e.message||"Não foi possível salvar a avaliação.");
+    if(btn){btn.disabled=false;btn.textContent="⭐ Tentar novamente";}
+  }
 }
 
 function abrirAdmin(){
@@ -662,6 +718,7 @@ function cliente(){
   if(!auth.currentUser){ papelAuth="cliente"; abrirAcesso(); return; }
   sections();
   $("cliente").classList.remove("hidden");
+  if($("clienteServicosEscolha")) $("clienteServicosEscolha").classList.remove("hidden");
   clienteUser=auth.currentUser;
   mostrarAreaClienteAutenticado();
 }
@@ -825,11 +882,22 @@ function sairCliente(){
 }
 
 function abrirHistoricoCliente(){
+  sections();
+  $("cliente").classList.remove("hidden");
+  $("clienteAuth").classList.add("hidden");
+  $("clienteApp").classList.remove("hidden");
   $("clienteHistorico").classList.remove("hidden");
   carregarHistoricoCliente();
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 function fecharHistoricoCliente(){
   $("clienteHistorico").classList.add("hidden");
+  if(clienteOrderId && frete && (frete.status==="entregue" || Number(frete.etapa||0)>=4)){
+    sections();
+    $("clienteViagem").classList.remove("hidden");
+  }else if($("clienteServicosEscolha")){
+    $("clienteServicosEscolha").classList.remove("hidden");
+  }
 }
 
 function carregarHistoricoCliente(){
@@ -1231,7 +1299,7 @@ function novoPedidoCliente(){
   sections();
   $("cliente").classList.remove("hidden");
   if($("clienteServicosEscolha")) $("clienteServicosEscolha").classList.remove("hidden");
-  if($("clienteHistorico")) $("clienteHistorico").classList.remove("hidden");
+  if($("clienteHistorico")) $("clienteHistorico").classList.add("hidden");
 }
 
 function atualizarCliente(){
@@ -1591,7 +1659,6 @@ async function podeAvancarEtapa(f){
   }
   return {ok:true};
 }
-function abrirAvaliacaoCliente(){if(!frete||!frete.motorista){alert("Ainda não há motorista para avaliar.");return;}const nota=prompt("Dê uma nota de 1 a 5 para o motorista:","5");if(nota===null)return;const n=Math.max(1,Math.min(5,Number(nota)));const comentario=prompt("Quer deixar um comentário? (opcional)","")||"";db.collection("fretes").doc(frete.id).update({avaliacaoCliente:{nota:n,comentario,criadoEm:firebase.firestore.FieldValue.serverTimestamp()}}).then(()=>{alert("⭐ Avaliação registrada. Obrigado!");atualizarCliente();}).catch(e=>alert("Não foi possível registrar a avaliação: "+e.message));}
 async function proximaEtapa(){
   if(!driverOrderId)return;
   try{
@@ -1709,6 +1776,10 @@ function renderDriver(f){
   $("acaoMotorista").textContent=labels[f.etapa||1]; $("acaoMotorista").className=f.etapa===4?"orange":"green";
   atualizarGPSMotorista(f);
 }
+
+document.addEventListener("keydown",(event)=>{
+  if(event.key==="Escape" && $("avaliacaoModal") && !$("avaliacaoModal").classList.contains("hidden")) fecharAvaliacaoCliente();
+});
 
 document.addEventListener("DOMContentLoaded",()=>{
   carregarMotorista();
