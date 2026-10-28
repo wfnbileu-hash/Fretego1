@@ -1,0 +1,9 @@
+
+{
+  "name": "fretego-webhook",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "firebase-admin": "^13.5.0"
+  }
+}
