@@ -72,16 +72,16 @@ async function settle(firestore, charge, payment) {
       if (!snaps[i].exists) throw new Error(`Comissão ausente: ${ids[i]}`);
       const c = snaps[i].data(), status = String(c.status || "").toLowerCase();
       if (String(c.motoristaId || "") !== String(driverId)) throw new Error("Motorista da comissão não confere");
-      const paid = ["pago","paid","approved","aprovado"].includes(status);
+      const paid = ["paga","pago","paid","approved","aprovado"].includes(status);
       const samePayment = String(c.pagamentoId || c.mercadoPagoPaymentId || "") === paymentId;
-      if (!["pendente","pending","pago","paid","approved","aprovado"].includes(status) || (paid && !samePayment))
+      if (!["pendente","pending","paga","pago","paid","approved","aprovado"].includes(status) || (paid && !samePayment))
         throw new Error(`Comissão não pode ser conciliada: ${ids[i]}`);
     }
     refs.forEach((r, i) => {
       const c = snaps[i].data(), status = String(c.status || "").toLowerCase();
       if (!(["pago","paid","approved","aprovado"].includes(status) &&
             String(c.pagamentoId || c.mercadoPagoPaymentId || "") === paymentId)) {
-        tx.update(r, {status:"pago", pagamentoId:paymentId, mercadoPagoPaymentId:paymentId,
+        tx.update(r, {status:"paga", pagamentoId:paymentId, mercadoPagoPaymentId:paymentId,
           pagoEm:admin.firestore.FieldValue.serverTimestamp()});
       }
     });
