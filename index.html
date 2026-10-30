@@ -1685,7 +1685,12 @@ function ouvirListaPedidosDisponiveis(){
       const isDed=f.modalidade==="dedicado", isPass=f.modalidade==="passageiro";
       const agenda=isDed && f.inicioAgendado&&f.inicioAgendado.toDate?`<div class="detail">🗓️ <b>Início:</b> ${f.inicioAgendado.toDate().toLocaleString("pt-BR")}</div>`:"";
       return `<div class="driverbox"><h3>${isDed?`🏍️ Moto Dedicada (${f.horasDedicado}h)`:isPass?`👤 Corrida Urbana (${f.qtdPassageiros||1} pass.)`:`📦 Frete (${f.carga||"Carga"})`}</h3><div class="detail">📍 <b>Partida:</b> ${f.origem||""}</div><div class="detail">🏁 <b>Destino:</b> ${isDed?f.obsDedicado:(destinos.join(" ➡️ ")||"-")}</div>${agenda}<div class="detail">💰 <b>R$ ${Number(f.preco||0).toFixed(2).replace(".",",")}</b></div><button class="green" onclick="aceitar('${f.id}')">✅ Aceitar Chamada</button></div>`;
-    }).join("");
+        }).join("");
+  }, err => {
+    console.error("Erro ao carregar chamadas disponíveis:", err);
+    $("lista").innerHTML =
+      "<div class='info'>⚠️ Erro ao carregar chamadas: " +
+      (err.message || "Falha na consulta") + "</div>";
   });
 }
 async function aceitar(orderId){
