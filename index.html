@@ -1641,7 +1641,7 @@ function atualizarPainel(){
     db.collection("fretes")
       .where("motoristaId", "==", auth.currentUser.uid)
       .where("status", "in", ["aceito", "em_rota", "coletado"])
-      .get()}).then(snap => {
+      .get().then(snap => {
         if(!snap.empty){
           driverOrderId = snap.docs[0].id;
           localStorage.setItem("fretego_driver_order_id", driverOrderId);
@@ -1657,6 +1657,10 @@ function atualizarPainel(){
           "</div>";
         ouvirListaPedidosDisponiveis();
       });
+  } else {
+    ouvirListaPedidosDisponiveis();
+  }
+}
 
 function ouvirListaPedidosDisponiveis(){
   if(listenerDriverList) listenerDriverList();
