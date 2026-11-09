@@ -1909,7 +1909,7 @@ function ouvirPedidoMotoristaAtivo(orderId){
       }
     } else {
       atualizarRegraCancelamentoMotorista(null);
-      driverOrderId = null;
+      driverOrderId = null;atualizarAbaCorridaAtiva();
       localStorage.removeItem("fretego_driver_order_id");
       $("viagemMotorista").classList.add("hidden");
       atualizarPainel();
@@ -2027,8 +2027,8 @@ async function proximaEtapa(){
 async function cancelarAceite(){
   if(!driverOrderId || !auth.currentUser) return;
   try{
-    await functions.httpsCallable("cancelarFreteSeguro")({orderId:driverOrderId});atualizarAbaCorridaAtiva();
-    driverOrderId=null; localStorage.removeItem("fretego_driver_order_id");
+    await functions.httpsCallable("cancelarFreteSeguro")({orderId:driverOrderId});
+    driverOrderId=null; atualizarAbaCorridaAtiva(); localStorage.removeItem("fretego_driver_order_id");
     if(listenerDriverActive){listenerDriverActive();listenerDriverActive=null;}
     $("viagemMotorista").classList.add("hidden"); atualizarPainel();
   }catch(e){alert("Não foi possível cancelar: "+(e.message||"verifique as regras de cancelamento."));}
