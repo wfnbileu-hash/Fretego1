@@ -1850,14 +1850,14 @@ function ouvirListaPedidosDisponiveis(){
 }
 async function aceitar(orderId){
   const m=JSON.parse(localStorage.getItem("fretego_motorista")||"{}");
-  atualizarAbaCorridaAtiva();
-irParaPainelMotorista("viagemMotorista");
   if(!auth.currentUser){alert("Entre na sua conta de motorista para aceitar chamadas.");return;}
   if(!m.placa || !m.veiculo){alert("Complete seu cadastro de motorista antes de aceitar chamadas.");return;}
   try{
     await functions.httpsCallable("aceitarFreteSeguro")({orderId});
     pararAlertaSonoro();driverAlertPending.clear();
     driverOrderId=orderId; localStorage.setItem("fretego_driver_order_id",orderId);
+    atualizarAbaCorridaAtiva();
+irParaPainelMotorista("viagemMotorista");
     if(listenerDriverList){listenerDriverList();listenerDriverList=null;}
     ouvirPedidoMotoristaAtivo(driverOrderId);
   }catch(e){alert("Não foi possível aceitar: "+(e.message||"verifique sua conexão e tente novamente."));}
@@ -1894,6 +1894,7 @@ function ouvirPedidoMotoristaAtivo(orderId){
       if(data.status === "disponivel"){
         atualizarRegraCancelamentoMotorista(null);
         driverOrderId = null;
+        atualizarAbaCorridaAtiva();
         localStorage.removeItem("fretego_driver_order_id");
         $("viagemMotorista").classList.add("hidden");
         carregarHistoricoMotorista();
@@ -2017,7 +2018,7 @@ async function proximaEtapa(){
     const data=resposta.data||{};
     if(data.concluido){
       alert("🎉 Serviço concluído! Comissão de 10% registrada no financeiro.");
-      driverOrderId=null; localStorage.removeItem("fretego_driver_order_id"); pararGPSMotorista();
+      driverOrderId=null; atualizarAbaCorridaAtiva();localStorage.removeItem("fretego_driver_order_id"); pararGPSMotorista();
       if(listenerDriverActive){listenerDriverActive();listenerDriverActive=null;}
       $("viagemMotorista").classList.add("hidden"); atualizarPainel(); carregarFinanceiroMotorista();
     }
@@ -2026,7 +2027,7 @@ async function proximaEtapa(){
 async function cancelarAceite(){
   if(!driverOrderId || !auth.currentUser) return;
   try{
-    await functions.httpsCallable("cancelarFreteSeguro")({orderId:driverOrderId});
+    await functions.httpsCallable("cancelarFreteSeguro")({orderId:driverOrderId});atualizarAbaCorridaAtiva();
     driverOrderId=null; localStorage.removeItem("fretego_driver_order_id");
     if(listenerDriverActive){listenerDriverActive();listenerDriverActive=null;}
     $("viagemMotorista").classList.add("hidden"); atualizarPainel();
