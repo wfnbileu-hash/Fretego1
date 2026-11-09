@@ -78,6 +78,11 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .driver-nav{display:flex;gap:8px;overflow-x:auto;padding:4px 1px 12px;margin:0 0 4px;scrollbar-width:thin;position:sticky;top:86px;z-index:900;background:var(--bg-main)}
 .driver-nav button{flex:0 0 auto;width:auto;min-height:40px;margin:0;padding:9px 13px;border:1px solid var(--border);border-radius:999px;background:#fff;color:#1e293b;box-shadow:none;font-size:12px;font-weight:800;white-space:nowrap}
 .driver-nav button:hover{background:#eff6ff;border-color:#93c5fd;transform:none}
+  .driver-nav button.active{
+  background:#eff6ff;
+  border-color:#2563eb;
+  color:#1d4ed8;
+  }
 #motorista .card[id]{scroll-margin-top:150px}
 @media(max-width:480px){.driver-nav{top:76px;gap:6px}.driver-nav button{padding:8px 11px;font-size:11px}}
 
@@ -494,78 +499,93 @@ body.app-motorista #roleClienteBtn{display:none!important}
   <button type="button" onclick="irParaPainelMotorista('motoristaHistoricoCard')">📋 Histórico</button>
   <button type="button" onclick="irParaPainelMotorista('meuCadastro')">👤 Perfil</button>
 </nav>
-<div class="card">
-  <h2>🚚 Área do Motorista</h2>
-  <div id="status" class="status offline">⚪ OFFLINE</div>
-  <button id="onlineBtn" class="green" onclick="toggleOnline()">🟢 Ficar Online</button>
-  <button class="secondary history-toggle" id="btnToggleHistoricoMotorista" onclick="alternarHistoricoMotorista()" aria-expanded="false">📋 Ver corridas concluídas</button>
-</div>
-
-<div class="card" id="cadastro">
-  <h2>📝 Cadastro do Condutor</h2>
-  <label>Nome Completo</label><input id="mNome" placeholder="Seu nome completo">
-  <label>Telefone WhatsApp</label><input id="mTel" placeholder="(15) 99999-9999">
-  <label>Tipo de veículo</label>
-  <select id="mVeiculo">
-    <option value="moto">🏍️ Moto</option>
-    <option value="carro">🚗 Carro</option>
-    <option value="utilitario">🚚 Fiorino / Utilitário</option>
-    <option value="van">🚐 Van</option>
-    <option value="caminhao">🚛 Caminhão</option>
-  </select>
-  <label>Placa do Veículo</label><input id="mPlaca" placeholder="ABC1D23">
-  <label>Cidade Base</label><input id="mCidade" placeholder="Cerquilho">
-  <button onclick="salvarMotorista()">💾 Salvar Cadastro</button>
-</div>
-
-<div class="card hidden" id="meuCadastro">
-  <h2>👤 Meu Perfil</h2>
-  <div id="perfil"></div>
-  <button class="secondary" onclick="editarMotorista()">✏️ Editar Perfil</button>
-</div>
-
-<div class="card" id="painelFinanceiroMotorista">
-  <h2>💰 Meu Financeiro</h2>
-  <p style="font-size:13px;color:var(--text-muted)">Comissão de 10% por serviço concluído, inclusive entregas vindas do Perto. Gorjetas não entram no cálculo; o cliente paga o valor do serviço diretamente ao motorista.</p>
-  <div class="finance-grid">
-    <div class="finance-stat"><small>Faturamento bruto</small><strong id="finBruto">R$ 0,00</strong></div>
-    <div class="finance-stat"><small>Comissão FreteGo</small><strong id="finComissao">R$ 0,00</strong></div>
-    <div class="finance-stat"><small>Comissões pendentes</small><strong id="finPendente">R$ 0,00</strong></div>
-    <div class="finance-stat"><small>Pendências de meses fechados</small><strong id="finPendenciasFechadas">0</strong></div>
+<div id="abaCorridasMotorista" class="driver-tab-panel">
+  <div class="card">
+    <h2>🚚 Área do Motorista</h2>
+    <div id="status" class="status offline">⚪ OFFLINE</div>
+    <button id="onlineBtn" class="green" onclick="toggleOnline()">🟢 Ficar Online</button>
   </div>
-  <div id="finBloqueioAviso" class="info hidden"></div>
-  <div class="finance-actions">
-    <button class="green" onclick="gerarPixComissao()">🔑 Gerar Pix para pagar comissão</button>
-    <button class="secondary" onclick="carregarFinanceiroMotorista()">🔄 Atualizar financeiro</button>
+
+  <div class="card" id="painelFretes">
+    <h2>📦 Oportunidades Disponíveis</h2>
+    <div id="lista">Fique online para receber chamadas.</div>
   </div>
-  <div id="financeiroPix" class="info hidden" style="overflow-wrap:anywhere"></div>
-  <h3 style="margin-top:16px">Histórico financeiro</h3>
-  <div id="financeiroHistorico">Entre como motorista para carregar seu financeiro.</div>
 </div>
 
-<div class="card" id="painelFretes">
-  <h2>📦 Oportunidades Disponíveis</h2>
-  <div id="lista">Fique online para receber chamadas.</div>
-</div>
-
-<div class="card hidden" id="motoristaHistoricoCard">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-    <h2 style="margin:0">📋 Meu Histórico</h2>
-    <button class="secondary" onclick="carregarHistoricoMotorista()" style="width:auto;margin:0">🔄 Atualizar</button>
+<div id="abaCorridaAtiva" class="driver-tab-panel hidden">
+  <div class="card" id="semCorridaAtiva">
+    <h2>🧭 Corrida ativa</h2>
+    <div class="info">Você não possui nenhuma corrida ativa no momento.</div>
   </div>
-  <div id="listaHistoricoMotorista" style="margin-top:10px">Carregando histórico...</div>
+
+  <div class="card hidden" id="viagemMotorista">
+    <span class="pill" id="motoristaPill">CHAMADA ACEITA</span>
+    <h2 style="margin-top:10px" id="motoristaTitulo">📦 Detalhes do Serviço</h2>
+    <div class="stepbar" id="driverSteps"><div class="step active"></div><div class="step"></div><div class="step"></div><div class="step"></div><div class="step"></div></div>
+    <div id="freteMotorista"></div>
+    <div id="gpsMotoristaBox" class="info" style="margin:10px 0">📡 GPS aguardando...</div>
+    <button id="acaoMotorista" class="green" onclick="proximaEtapa()">🧭 Iniciar Trajeto</button>
+    <button id="btnCancelarMotorista" class="red" onclick="cancelarAceite()">❌ Cancelar Chamada</button>
+    <div id="avisoCancelamentoDedicado" class="info hidden" style="margin-top:10px"></div>
+  </div>
 </div>
 
-<div class="card hidden" id="viagemMotorista">
-  <span class="pill" id="motoristaPill">CHAMADA ACEITA</span>
-  <h2 style="margin-top:10px" id="motoristaTitulo">📦 Detalhes do Serviço</h2>
-  <div class="stepbar" id="driverSteps"><div class="step active"></div><div class="step"></div><div class="step"></div><div class="step"></div><div class="step"></div></div>
-  <div id="freteMotorista"></div>
-  <div id="gpsMotoristaBox" class="info" style="margin:10px 0">📡 GPS aguardando...</div>
-  <button id="acaoMotorista" class="green" onclick="proximaEtapa()">🧭 Iniciar Trajeto</button>
-  <button id="btnCancelarMotorista" class="red" onclick="cancelarAceite()">❌ Cancelar Chamada</button>
-  <div id="avisoCancelamentoDedicado" class="info hidden" style="margin-top:10px"></div>
+<div id="abaFinanceiroMotorista" class="driver-tab-panel hidden">
+  <div class="card" id="painelFinanceiroMotorista">
+    <h2>💰 Meu Financeiro</h2>
+    <p style="font-size:13px;color:var(--text-muted)">Comissão de 10% por serviço concluído, inclusive entregas vindas do Perto. Gorjetas não entram no cálculo; o cliente paga o valor do serviço diretamente ao motorista.</p>
+    <div class="finance-grid">
+      <div class="finance-stat"><small>Faturamento bruto</small><strong id="finBruto">R$ 0,00</strong></div>
+      <div class="finance-stat"><small>Comissão FreteGo</small><strong id="finComissao">R$ 0,00</strong></div>
+      <div class="finance-stat"><small>Comissões pendentes</small><strong id="finPendente">R$ 0,00</strong></div>
+      <div class="finance-stat"><small>Pendências de meses fechados</small><strong id="finPendenciasFechadas">0</strong></div>
+    </div>
+    <div id="finBloqueioAviso" class="info hidden"></div>
+    <div class="finance-actions">
+      <button class="green" onclick="gerarPixComissao()">🔑 Gerar Pix para pagar comissão</button>
+      <button class="secondary" onclick="carregarFinanceiroMotorista()">🔄 Atualizar financeiro</button>
+    </div>
+    <div id="financeiroPix" class="info hidden" style="overflow-wrap:anywhere"></div>
+    <h3 style="margin-top:16px">Histórico financeiro</h3>
+    <div id="financeiroHistorico">Entre como motorista para carregar seu financeiro.</div>
+  </div>
 </div>
+
+<div id="abaHistoricoMotorista" class="driver-tab-panel hidden">
+  <div class="card" id="motoristaHistoricoCard">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+      <h2 style="margin:0">📋 Meu Histórico</h2>
+      <button class="secondary" onclick="carregarHistoricoMotorista()" style="width:auto;margin:0">🔄 Atualizar</button>
+    </div>
+    <div id="listaHistoricoMotorista" style="margin-top:10px">Carregando histórico...</div>
+  </div>
+</div>
+
+<div id="abaPerfilMotorista" class="driver-tab-panel hidden">
+  <div class="card" id="cadastro">
+    <h2>📝 Cadastro do Condutor</h2>
+    <label>Nome Completo</label><input id="mNome" placeholder="Seu nome completo">
+    <label>Telefone WhatsApp</label><input id="mTel" placeholder="(15) 99999-9999">
+    <label>Tipo de veículo</label>
+    <select id="mVeiculo">
+      <option value="moto">🏍️ Moto</option>
+      <option value="carro">🚗 Carro</option>
+      <option value="utilitario">🚚 Fiorino / Utilitário</option>
+      <option value="van">🚐 Van</option>
+      <option value="caminhao">🚛 Caminhão</option>
+    </select>
+    <label>Placa do Veículo</label><input id="mPlaca" placeholder="ABC1D23">
+    <label>Cidade Base</label><input id="mCidade" placeholder="Cerquilho">
+    <button onclick="salvarMotorista()">💾 Salvar Cadastro</button>
+  </div>
+
+  <div class="card hidden" id="meuCadastro">
+    <h2>👤 Meu Perfil</h2>
+    <div id="perfil"></div>
+    <button class="secondary" onclick="editarMotorista()">✏️ Editar Perfil</button>
+  </div>
+</div>
+
 <button class="secondary" onclick="voltarAoTopoMotorista()">↑ Voltar ao topo</button>
 </section>
 
@@ -652,14 +672,51 @@ function pararAlertaSonoro(){
   driverAlertSoundActive=false;
   if(driverAlertTimer){clearTimeout(driverAlertTimer);driverAlertTimer=null;}
 }
+
 function irParaPainelMotorista(id){
-  let alvo=$(id);
-  if(id==="meuCadastro" && (!alvo || alvo.classList.contains("hidden"))) alvo=$("cadastro");
-  if(!alvo)return;
-  if(id==="motoristaHistoricoCard"&&alvo.classList.contains("hidden"))alternarHistoricoMotorista();
-  const destinoId=alvo.id;
-  setTimeout(()=>{const destino=$(destinoId);if(destino)destino.scrollIntoView({behavior:"smooth",block:"start"});},40);
+  const abas={
+    painelFretes:"abaCorridasMotorista",
+    viagemMotorista:"abaCorridaAtiva",
+    painelFinanceiroMotorista:"abaFinanceiroMotorista",
+    motoristaHistoricoCard:"abaHistoricoMotorista",
+    meuCadastro:"abaPerfilMotorista"
+  };
+
+  const abaId=abas[id];
+  if(!abaId)return;
+
+  document.querySelectorAll("#motorista .driver-tab-panel")
+    .forEach(p=>p.classList.add("hidden"));
+
+  const aba=$(abaId);
+  if(!aba)return;
+
+  aba.classList.remove("hidden");
+
+  document.querySelectorAll("#motorista .driver-nav button")
+    .forEach(btn=>{
+      const ativo=btn.getAttribute("onclick")===`irParaPainelMotorista('${id}')`;
+      btn.classList.toggle("active",ativo);
+      if(ativo)btn.setAttribute("aria-current","page");
+      else btn.removeAttribute("aria-current");
+    });
+
+  if(id==="viagemMotorista")atualizarAbaCorridaAtiva();
+  if(id==="motoristaHistoricoCard")carregarHistoricoMotorista();
+  if(id==="painelFinanceiroMotorista")carregarFinanceiroMotorista();
+
+  setTimeout(()=>aba.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  }),40);
 }
+
+function atualizarAbaCorridaAtiva(){
+  const temCorrida=!!driverOrderId;
+  $("viagemMotorista").classList.toggle("hidden",!temCorrida);
+  $("semCorridaAtiva").classList.toggle("hidden",temCorrida);
+}
+
 function voltarAoTopoMotorista(){window.scrollTo({top:0,behavior:"smooth"});}
 function sections(){["home","acesso","cliente","orcamento","clienteViagem","avaliacaoModal","motorista","admin"].forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});document.body.classList.remove("home-mode","modal-open")}
 function inicio(){
@@ -1155,18 +1212,25 @@ auth.onAuthStateChanged(async (user)=>{
   }
 });
 
+
 function motorista(){
-  if(!auth.currentUser){ papelAuth="motorista"; abrirAcesso(); return; }
+  if(!auth.currentUser){
+    papelAuth="motorista";
+    abrirAcesso();
+    return;
+  }
+
   sections();
   $("motorista").classList.remove("hidden");
-  const hist=$("motoristaHistoricoCard");
-  const toggle=$("btnToggleHistoricoMotorista");
-  if(hist) hist.classList.add("hidden");
-  if(toggle){toggle.setAttribute("aria-expanded","false");toggle.textContent="📋 Ver corridas concluídas";}
-  setTimeout(()=>carregarHistoricoMotorista(),50);
+
   carregarMotorista();
   atualizarPainel();
+
+  irParaPainelMotorista(
+    driverOrderId ? "viagemMotorista" : "painelFretes"
+  );
 }
+
 
 function alternarHistoricoMotorista(){
   const hist=$("motoristaHistoricoCard");
@@ -1786,6 +1850,8 @@ function ouvirListaPedidosDisponiveis(){
 }
 async function aceitar(orderId){
   const m=JSON.parse(localStorage.getItem("fretego_motorista")||"{}");
+  atualizarAbaCorridaAtiva();
+irParaPainelMotorista("viagemMotorista");
   if(!auth.currentUser){alert("Entre na sua conta de motorista para aceitar chamadas.");return;}
   if(!m.placa || !m.veiculo){alert("Complete seu cadastro de motorista antes de aceitar chamadas.");return;}
   try{
