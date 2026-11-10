@@ -245,9 +245,21 @@ body.app-motorista #roleClienteBtn{display:none!important}
   display:flex;
   align-items:flex-end;
   justify-content:center;
-  background:
-    linear-gradient(rgba(3,10,28,.35),rgba(3,10,28,.65)),
-    url("Web/capa-login.webp") center 35% / cover no-repeat;
+  isolation:isolate;
+  background:#030a1c;
+}
+
+#acesso::before{
+  content:"";
+  position:absolute;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(75vw,300px);
+  height:320px;
+  background:url("Web/capa-login.webp") center top / contain no-repeat;
+  z-index:-1;
+  pointer-events:none;
 }
 
 #acesso .acesso-card{
@@ -327,18 +339,6 @@ body.app-motorista #roleClienteBtn{display:none!important}
   #acesso .acesso-card{
     width:min(100%,340px);
     padding:12px;
-  }
-}
-  /* AJUSTE DA CAPA NO CELULAR */
-@media(max-width:480px){
-  #acesso{
-    background-color:#030a1c;
-    background-image:
-      linear-gradient(rgba(3,10,28,.48),rgba(3,10,28,.72)),
-      url("Web/capa-login.webp");
-    background-position:center, center top;
-    background-size:auto, 35% auto;
-    background-repeat:no-repeat;
   }
 }
 </style>
