@@ -276,7 +276,46 @@ body.app-motorista #roleClienteBtn{display:none!important}
   #acesso{background-position:center center}
   #acesso .acesso-card{padding:18px}
 }
+/* AJUSTE DO QUADRO DE LOGIN */
+#acesso .acesso-card{
+  width:min(100%,360px);
+  padding:14px;
+  background:rgba(4,14,34,.78);
+  border-radius:18px;
+}
 
+#acesso .acesso-card h2{
+  font-size:20px;
+  margin-bottom:6px;
+}
+
+#acesso .acesso-card p{
+  font-size:12px!important;
+  margin-bottom:6px!important;
+}
+
+#acesso .acesso-card .info{
+  margin:6px 0 10px!important;
+  padding:8px;
+  font-size:12px;
+}
+
+#acesso .acesso-card input{
+  padding:10px;
+  margin-bottom:8px;
+}
+
+#acesso .acesso-card button{
+  padding:10px;
+  margin-top:6px;
+}
+
+@media(max-width:480px){
+  #acesso .acesso-card{
+    width:min(100%,340px);
+    padding:12px;
+  }
+}
 </style>
 </head>
 <body class="home-mode app-motorista">
