@@ -228,7 +228,10 @@ body.app-motorista #roleClienteBtn{display:none!important}
   inset:0;
   z-index:3000;
   overflow-y:auto;
-  padding:clamp(20px,5vh,48px) 14px max(24px,env(safe-area-inset-bottom));
+  padding: 0 14px max(20px,env(safe-area-inset-bottom));
+display: flex;
+align-items: flex-end;
+justify-content: center;
   background:
     linear-gradient(rgba(3,10,28,.48),rgba(3,10,28,.72)),
     url("Web/capa-login.webp") center 35% / cover no-repeat;
@@ -272,12 +275,9 @@ body.app-motorista #roleClienteBtn{display:none!important}
   box-shadow:none;
 }
 
-@media(max-width:480px){
-  #acesso{background-position:center center}
-  #acesso .acesso-card{padding:18px}
-}
-/* AJUSTE DO QUADRO DE LOGIN */
+/* QUADRO DE LOGIN COMPACTO */
 #acesso .acesso-card{
+  margin:0 auto 12px;
   width:min(100%,360px);
   padding:14px;
   background:rgba(4,14,34,.78);
