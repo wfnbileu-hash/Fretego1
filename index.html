@@ -222,6 +222,61 @@ body.app-motorista #roleClienteBtn{display:none!important}
 #financeiroHistorico{font-size:13px}
 @media(max-width:420px){.finance-stat strong{font-size:18px}}
 
+/* NOVA IDENTIDADE VISUAL — TELA DE ACESSO */
+#acesso{
+  position:fixed;
+  inset:0;
+  z-index:3000;
+  overflow-y:auto;
+  padding:clamp(20px,5vh,48px) 14px max(24px,env(safe-area-inset-bottom));
+  background:
+    linear-gradient(rgba(3,10,28,.48),rgba(3,10,28,.72)),
+    url("web/capa-login.webp") center 35% / cover no-repeat;
+}
+
+#acesso .acesso-card{
+  width:min(100%,480px);
+  margin:0 auto;
+  background:rgba(4,14,34,.92);
+  color:#fff;
+  border:1px solid rgba(59,130,246,.65);
+  border-radius:22px;
+  box-shadow:0 15px 50px rgba(0,0,0,.45);
+  backdrop-filter:blur(12px);
+}
+
+#acesso .acesso-card h2,
+#acesso .acesso-card label{
+  color:#fff;
+}
+
+#acesso .acesso-card p{
+  color:#cbd5e1!important;
+}
+
+#acesso .acesso-card .info{
+  background:rgba(30,64,175,.3);
+  color:#bfdbfe;
+  border-color:rgba(96,165,250,.4);
+}
+
+#acesso .acesso-card button:not(.secondary){
+  background:linear-gradient(135deg,#ff9a00,#f05a00);
+  box-shadow:0 5px 18px rgba(249,115,22,.25);
+}
+
+#acesso .acesso-card button.secondary{
+  background:rgba(30,64,175,.35);
+  border:1px solid #3b82f6;
+  color:#fff;
+  box-shadow:none;
+}
+
+@media(max-width:480px){
+  #acesso{background-position:center center}
+  #acesso .acesso-card{padding:18px}
+}
+
 </style>
 </head>
 <body class="home-mode app-motorista">
@@ -248,7 +303,7 @@ body.app-motorista #roleClienteBtn{display:none!important}
 </section>
 
 <section id="acesso" class="hidden">
-<div class="card">
+<div class="card acesso-card">
   <h2>🔐 Acesso FreteGo</h2>
   <p style="color:var(--text-muted);font-size:14px;margin-bottom:8px">Acesso exclusivo para motoristas cadastrados e aprovados no FreteGo.</p>
   <div class="info" style="margin:10px 0 14px">🚚 Aplicativo do Motorista</div>
