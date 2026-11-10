@@ -85,6 +85,19 @@ button:disabled{opacity:.55;cursor:not-allowed}
   }
 #motorista .card[id]{scroll-margin-top:150px}
 @media(max-width:480px){.driver-nav{top:76px;gap:6px}.driver-nav button{padding:8px 11px;font-size:11px}}
+  .driver-back{
+  display:block;
+  width:auto;
+  margin:0 0 8px auto;
+  padding:8px 15px;
+  border:1px solid #cbd5e1;
+  border-radius:20px;
+  background:#e2e8f0;
+  color:#1e293b;
+  font-size:12px;
+  font-weight:800;
+  box-shadow:none;
+  }
 
 
 /* ACESSO UNIFICADO E DASHBOARD */
@@ -586,6 +599,7 @@ justify-content: center;
 </section>
 
 <section id="motorista" class="hidden">
+  <button type="button" class="driver-back" onclick="voltarLoginMotorista()">← Voltar ao login</button>
 <nav class="driver-nav" aria-label="Navegação do motorista">
   <button type="button" onclick="irParaPainelMotorista('painelFretes')">📦 Corridas</button>
   <button type="button" onclick="irParaPainelMotorista('viagemMotorista')">🧭 Corrida ativa</button>
@@ -812,6 +826,40 @@ function atualizarAbaCorridaAtiva(){
 }
 
 function voltarAoTopoMotorista(){window.scrollTo({top:0,behavior:"smooth"});}
+async function voltarLoginMotorista(){
+  if(driverOrderId){
+    alert("Finalize ou cancele sua corrida ativa antes de sair.");
+    irParaPainelMotorista("viagemMotorista");
+    return;
+  }
+
+  if(!auth.currentUser){
+    abrirAcesso();
+    return;
+  }
+
+  try{
+    await functions.httpsCallable("alternarOnlineSeguro")({online:false});
+
+    online=false;
+    localStorage.setItem("fretego_online","false");
+
+    pararAlertaSonoro();
+    driverAlertPending.clear();
+    driverAlertKnown.clear();
+
+    if(listenerDriverList){listenerDriverList();listenerDriverList=null;}
+    if(listenerDriverActive){listenerDriverActive();listenerDriverActive=null;}
+    if(listenerHistoricoMotorista){listenerHistoricoMotorista();listenerHistoricoMotorista=null;}
+    if(listenerNotificacoes){listenerNotificacoes();listenerNotificacoes=null;}
+
+    await auth.signOut();
+    abrirAcesso();
+
+  }catch(e){
+    alert("Não foi possível sair agora: "+(e.message||"verifique sua conexão."));
+  }
+}
 function sections(){["home","acesso","cliente","orcamento","clienteViagem","avaliacaoModal","motorista","admin"].forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});document.body.classList.remove("home-mode","modal-open")}
 function inicio(){
   if(APP_MODE==="motorista" || APP_MODE==="admin"){ abrirAcesso(); return; }
