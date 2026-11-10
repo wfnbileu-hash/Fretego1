@@ -252,17 +252,19 @@ body.app-motorista #roleClienteBtn{display:none!important}
 #acesso::before{
   content:"";
   position:absolute;
-  top:20px;
+  top:10px;
   left:50%;
   transform:translateX(-50%);
-  width:min(75vw,300px);
-  height:320px;
-  background:url("Web/capa-login.webp") center top / contain no-repeat;
-  z-index:-1;
+  width:min(95vw,420px);
+  height:430px;
+  background:url("Web/capa-login.webp") center center / contain no-repeat;
+  z-index:0;
   pointer-events:none;
 }
 
 #acesso .acesso-card{
+  position:relative;
+  z-index:1;
   width:min(100%,480px);
   margin:0 auto;
   background:rgba(4,14,34,.92);
