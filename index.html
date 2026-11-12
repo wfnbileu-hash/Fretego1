@@ -305,13 +305,17 @@ body.app-motorista #roleClienteBtn{display:none!important}
   box-shadow:none;
 }
 
-/* QUADRO DE LOGIN COMPACTO */
+/* QUADRO DE LOGIN TRANSPARENTE */
 #acesso .acesso-card{
   margin:0 auto 12px;
   width:min(100%,360px);
   padding:14px;
-  background:rgba(4,14,34,.78);
+  background:rgba(4,14,34,.38);
+  border:1px solid rgba(255,255,255,.22);
   border-radius:18px;
+  box-shadow:0 10px 35px rgba(0,0,0,.18);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
 }
 
 #acesso .acesso-card h2{
